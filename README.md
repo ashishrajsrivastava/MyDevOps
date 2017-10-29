@@ -1,4 +1,4 @@
-<img src="https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png" width="100" height="100">
+<img src="https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png" width="300" height="200">
 
 # My DevOps Work.
 
