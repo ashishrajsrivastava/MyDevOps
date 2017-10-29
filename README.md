@@ -1,67 +1,14 @@
-# How to use the DSC Configuration hosted here.
+# My DevOps Work.
 
-You May follow the documentation [Here](http://mydevops.readthedocs.io/en/latest/)
+I will be hosting my DevOps script,works documents etc here.
 
-Each file under docs have powershell dsc configuration like below:
+You May follow the documentation [here](http://mydevops.readthedocs.io/en/latest/)
 
-```PowerShell
-Configuration Configure-SomeDSC
-{
-    param (
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [String]$PackagePath,
 
-        [Parameter(Mandatory)]
-		[System.Management.Automation.PSCredential]$AdminCreds,
-		
-		
+Please follow the documentaion and let me know if you face any issue, you may open issue from github as well.
 
-    )
-	Import-DscResource -ModuleName SomeModuleName,AnotherModuleName
-			
-    Node localhost
-    {
-     #DSC work here   
+Please join my Azure DevOps telegram group @ [http://azuredevops.kloudezy.com/](http://azuredevops.kloudezy.com/)  
 
-        
-    }
-}
-```
+You may access my PowerShell training video on youtube [here](https://www.youtube.com/playlist?list=PLkSpjPdRpFFJt-H1cgUjh9r_o_wRwhj-N)
 
-Copy the complete config and save as Configure-SomeDSC.ps1 file format. Zip the file with the same name as the ps1 file name.
-
-Upload the zip file on a blob or file storage or any other internet accessible location. To have the file non public make sure you use Azure blob or file storage and use storage account access key in the following steps.
-
-Now you need to reference the same uploaded DSC configuration in to your arm template using following resourse code.
-
-```json
-{
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('virtualMachineName'),'/', 'MyDSCConfig')]",
-      "apiVersion": "2015-06-15",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.19",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "ModulesUrl": "https://YourConfigZipfileURL/cygrp-demo-vm-rg/Configure-SomeDSC.zip",
-          "ConfigurationFunction": "Configure-SomeDSC.ps1\\Configure-SomeDSC",
-          "Properties": {
-            "MachineName": "[parameters('virtualMachineName')]"
-            
-          }
-        },
-        "protectedSettings": {
-                      "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]"
-                  }
-      }
-}
-```
-
-Run your arm deployment and your deployment should be able install DSC extenstion and Apply the DSC Configuration.
+You may subscribe my Youtube channel by clicking [here](https://www.youtube.com/c/Ashishrajsrivastava?sub_confirmation=1)
