@@ -4,7 +4,7 @@
 
 I will be hosting my DevOps script and documents here.
 
-You may follow the documentation [here](http://mydevops.readthedocs.io/en/latest/) to know how to use the scripts here.
+You may follow the documentation [here](http://mydevops.readthedocs.io/en/latest/) to know how to use the scripts hosted here.
 
 Please follow the documentaion and let me know if you face any issue, you may open issue from github as well.
 
