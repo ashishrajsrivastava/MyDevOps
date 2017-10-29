@@ -1,6 +1,6 @@
 # Install IIS and configure IIS Websites with custom information using DSC.
 
-Followiing DSC Configuration Install IIS on machine and also configure websites with custom information.
+Followiing DSC Configuration installs IIS on machine and also configure websites with custom information.
 
 ```PowerShell
 Configuration Configure-Website
@@ -135,7 +135,7 @@ Configuration Configure-Website
 
 ```
 
-To call this DSC Configuration save the PowerShell code above as ps1 file and have it in file format, you may refer the below json snippet and Home page to know more how to use DSC extention in ARM templates.
+To call this DSC Configuration save the PowerShell code above as ps1 file and aip the ps1 file, you may refer the below json snippet and Home page to know more how to use DSC extention in ARM templates.
 
 ```json
 {
