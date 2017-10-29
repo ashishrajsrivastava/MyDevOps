@@ -57,7 +57,9 @@ Now you need to reference the same uploaded DSC configuration in to your arm tem
             
           }
         },
-        "protectedSettings": null
+        "protectedSettings": {
+                      "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]"
+                  }
       }
 }
 ```

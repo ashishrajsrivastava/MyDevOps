@@ -116,14 +116,14 @@ Configuration Configure-Website
          xWebsite prodWebsite
          {
             Ensure          = 'Present'
-            Name            = $WebSitePrefix +'-qa'
+            Name            = $WebSitePrefix +'-prod'
             State           = 'Started'
             PhysicalPath    = 'C:\inetpub\wwwroot\prod'
             BindingInfo     = @( MSFT_xWebBindingInformation
                                  {
                                    Protocol              = "HTTP"
                                    Port                  = 80
-                                   HostName = $UatPublicDNS
+                                   HostName = $ProdPublicDNS
                                  }
                                  
                                 )
@@ -152,7 +152,7 @@ To call this DSC Configuration save the PowerShell code above as ps1 file and ha
         "typeHandlerVersion": "2.19",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "ModulesUrl": "https://YourConfigZipfileURL/cygrp-demo-vm-rg/Configure-SomeDSC.zip",
+          "ModulesUrl": "https://YourConfigZipfileURL/Configure-SomeDSC.zip",
           "ConfigurationFunction": "Configure-SomeDSC.ps1\\Configure-SomeDSC",
           "Properties": {
             "MachineName": "[parameters('virtualMachineName')]",
@@ -162,7 +162,9 @@ To call this DSC Configuration save the PowerShell code above as ps1 file and ha
             "ProdPublicDNS":"ProdPublicDNS"
           }
         },
-        "protectedSettings": null
+        "protectedSettings": {
+                      "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]"
+                  }
       }
 }
 
