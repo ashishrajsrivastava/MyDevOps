@@ -1,6 +1,6 @@
-# My DevOps Work.
-![My Logo](https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png)
+![My Logo](https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png =250x250)
 
+# My DevOps Work.
 
 I will be hosting my DevOps script,works documents etc here.
 
