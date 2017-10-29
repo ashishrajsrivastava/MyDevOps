@@ -1,6 +1,6 @@
 #My DevOps Project Wiki
 
-We are using ReadtheDocs to generate wiki for our repo.
+<img src="https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png" width="450" height="300">
 
 **How to use the DSC Configuration hosted here**
 
