@@ -1,4 +1,4 @@
-# Install IIS and configure the IIS Website with custome information using DSC.
+# Install IIS and configure IIS Websites with custom information using DSC.
 
 Followiing DSC Configuration Install IIS on machine and also configure websites with custom information.
 
