@@ -157,9 +157,9 @@ To call this DSC Configuration save the PowerShell code above as ps1 file and ha
           "Properties": {
             "MachineName": "[parameters('virtualMachineName')]",
             "WebSitePrefix":"WebsitePrefix",
-            "DevPublicDNS":"WebsitePrefix",
-            "UatPublicDNS":"WebsitePrefix",
-            "ProdPublicDNS":"WebsitePrefix"
+            "DevPublicDNS":"DevPublicDNS",
+            "UatPublicDNS":"UatPublicDNS",
+            "ProdPublicDNS":"ProdPublicDNS"
           }
         },
         "protectedSettings": null
