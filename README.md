@@ -2,6 +2,8 @@
 
 Each file have powershell dsc configuration like below:
 
+You May follow the documentation [Here](http://mydevops.readthedocs.io/en/latest/)
+
 ```PowerShell
 Configuration Configure-SomeDSC
 {
