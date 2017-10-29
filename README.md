@@ -2,7 +2,7 @@
 
 I will be hosting my DevOps script,works documents etc here.
 
-You May follow the documentation [here](http://mydevops.readthedocs.io/en/latest/)
+You may follow the documentation [here](http://mydevops.readthedocs.io/en/latest/)
 
 
 Please follow the documentaion and let me know if you face any issue, you may open issue from github as well.
