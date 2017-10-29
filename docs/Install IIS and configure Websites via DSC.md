@@ -135,7 +135,7 @@ Configuration Configure-Website
 
 ```
 
-To call this DSC Configuration save the PowerShell code above as ps1 file and have it in file format, you may refer the below json snippet and main page help to know more how to use DSC extention in ARM templates.
+To call this DSC Configuration save the PowerShell code above as ps1 file and have it in file format, you may refer the below json snippet and Home page to know more how to use DSC extention in ARM templates.
 
 ```json
 {
