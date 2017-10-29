@@ -1,0 +1,7 @@
+site_name: My DevOps Projects
+repo_url: https://github.com/ashishrajsrivastava/MyDevOps
+theme: readthedocs
+pages:
+  - Home: index.md
+  - ARM with DSC:
+    - IIS with Custom Websites: Install IIS and configure Websites via DSC.md
