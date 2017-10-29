@@ -89,7 +89,7 @@ Configuration Configure-Website
                                  {
                                    Protocol              = "HTTP"
                                    Port                  = 80
-                                   HostName = 'dellcost-dev.cygrp.com'
+                                   HostName = $DevPublicDNS
                                  }
                                  
                                 )
@@ -106,7 +106,7 @@ Configuration Configure-Website
                                  {
                                    Protocol              = "HTTP"
                                    Port                  = 80
-                                   HostName = 'dellcost-uat.cygrp.com'
+                                   HostName = $UatPublicDNS
                                  }
                                  
                                 )
@@ -116,14 +116,14 @@ Configuration Configure-Website
          xWebsite prodWebsite
          {
             Ensure          = 'Present'
-            Name            = $WebSitePrefix +'-qa'
+            Name            = $WebSitePrefix +'-prod'
             State           = 'Started'
             PhysicalPath    = 'C:\inetpub\wwwroot\prod'
             BindingInfo     = @( MSFT_xWebBindingInformation
                                  {
                                    Protocol              = "HTTP"
                                    Port                  = 80
-                                   HostName = 'dellcost-qa.cygrp.com'
+                                   HostName = $ProdPublicDNS
                                  }
                                  
                                 )

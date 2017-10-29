@@ -89,7 +89,7 @@ Configuration Configure-Website
                                  {
                                    Protocol              = "HTTP"
                                    Port                  = 80
-                                   HostName = 'dellcost-dev.cygrp.com'
+                                   HostName = $DevPublicDNS
                                  }
                                  
                                 )
@@ -106,7 +106,7 @@ Configuration Configure-Website
                                  {
                                    Protocol              = "HTTP"
                                    Port                  = 80
-                                   HostName = 'dellcost-uat.cygrp.com'
+                                   HostName = $UatPublicDNS
                                  }
                                  
                                 )
@@ -123,7 +123,7 @@ Configuration Configure-Website
                                  {
                                    Protocol              = "HTTP"
                                    Port                  = 80
-                                   HostName = 'dellcost-qa.cygrp.com'
+                                   HostName = $UatPublicDNS
                                  }
                                  
                                 )
