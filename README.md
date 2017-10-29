@@ -2,7 +2,7 @@
 
 # My DevOps Work.
 
-I will be hosting my DevOps script,works documents etc here.
+I will be hosting my DevOps script and documents here.
 
 You may follow the documentation [here](http://mydevops.readthedocs.io/en/latest/)
 
