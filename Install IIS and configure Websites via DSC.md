@@ -164,6 +164,6 @@ To call this DSC Configuration save the PowerShell code above as ps1 file and ha
         },
         "protectedSettings": null
       }
-    }
+}
 
 ```
