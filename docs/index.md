@@ -2,7 +2,7 @@
 
 We are using ReadtheDocs to generate wiki for our repo.
 
-### How to use the DSC Configuration hosted here.
+**How to use the DSC Configuration hosted here**
 
 Each file have powershell dsc configuration like below:
 
