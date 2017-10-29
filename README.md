@@ -1,4 +1,4 @@
-![My Logo](https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png =250x250)
+![My Logo](https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png){:height="50%" width="50%"}
 
 # My DevOps Work.
 
