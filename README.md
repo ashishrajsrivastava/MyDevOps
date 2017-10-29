@@ -1,8 +1,8 @@
 # How to use the DSC Configuration hosted here.
 
-Each file have powershell dsc configuration like below:
-
 You May follow the documentation [Here](http://mydevops.readthedocs.io/en/latest/)
+
+Each file under docs have powershell dsc configuration like below:
 
 ```PowerShell
 Configuration Configure-SomeDSC
