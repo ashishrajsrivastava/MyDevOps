@@ -1,4 +1,4 @@
-﻿configuration Install-Web
+﻿configuration Install-WebServer
 {
 param([string[]]$ComputerName = $env:COMPUTERNAME)
     # One can evaluate expressions to get the node list
