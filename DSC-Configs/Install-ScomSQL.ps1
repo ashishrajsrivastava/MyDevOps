@@ -200,7 +200,7 @@
                         Features             = 'SQLENGINE'
                         InstanceName         = $SQLInstanceName
                         SourcePath           = $PackagePath
-                        PsDscRunAsCredential = $AdminCreds
+                        SourceCredential = $AdminCreds
         }                       
    
 		LocalConfigurationManager 
