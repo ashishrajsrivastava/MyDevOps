@@ -4,7 +4,7 @@
 
 . .\DSC-Configs\Install-Web.ps1
 
-( ContosoWebsite -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
+( Install-Web -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
    Set-Content -Path .\Artifacts.txt
 
 Start-DscConfiguration .\Install-Web -Wait -Force -verbose
