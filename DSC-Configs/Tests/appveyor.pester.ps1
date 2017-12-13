@@ -22,7 +22,7 @@ param(
     
         Import-Module Pester
 
-        Invoke-Pester -Path "$ProjectRoot\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru |
+        Invoke-Pester -Path "$ProjectRoot\DSC-Configs\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru |
             Export-Clixml -Path "$ProjectRoot\PesterResultsPS$PSVersion.xml"
     }
 
