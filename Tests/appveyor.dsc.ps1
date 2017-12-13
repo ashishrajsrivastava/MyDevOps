@@ -2,7 +2,7 @@
  
 "`n`tPerforming DSC Configuration`n"
 
-. .\DSC-Configs\Install-WebServer.ps1
+. .\Install-WebServer.ps1
 
 ( Install-WebServer -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
    Set-Content -Path .\Artifacts.txt
