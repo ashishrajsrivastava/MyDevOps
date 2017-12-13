@@ -15,9 +15,9 @@ build: false
 
 test_script:
 # Invoke DSC configuration!
-  - ps: . .\Tests\appveyor.dsc.ps1
+  - ps: . .\DSC-Configs\Tests\appveyor.dsc.ps1
 # Test with native PS version, finalize
-  - ps: . .\Tests\appveyor.pester.ps1 -Test -Finalize
+  - ps: . .\DSC-Configs\Tests\appveyor.pester.ps1 -Test -Finalize
 
 deploy_script:
   - ps: Get-Content .\Artifacts.txt | Foreach-Object { Push-AppveyorArtifact $_ }

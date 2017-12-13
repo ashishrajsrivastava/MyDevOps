@@ -4,7 +4,7 @@
 
 $PSVersionTable.PSVersion
 
-. .\Install-WebServer.ps1
+. .\DSC-Configs\Install-WebServer.ps1
 
 ( Install-WebServer -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
    Set-Content -Path .\Artifacts.txt
