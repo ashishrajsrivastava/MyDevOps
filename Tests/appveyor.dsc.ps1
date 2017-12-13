@@ -2,6 +2,8 @@
  
 "`n`tPerforming DSC Configuration`n"
 
+$PSVersionTable.PSVersion
+
 . .\Install-WebServer.ps1
 
 ( Install-WebServer -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
