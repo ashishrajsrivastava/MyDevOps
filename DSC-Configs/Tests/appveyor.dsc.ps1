@@ -2,9 +2,9 @@
  
 "`n`tPerforming DSC Configuration`n"
 
-. .\DSC-Configs\Install-Web.ps1
+. .\DSC-Configs\Install-WebServer.ps1
 
-( Install-Web -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
+( Install-WebServer -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
    Set-Content -Path .\Artifacts.txt
 
 Start-DscConfiguration .\Install-WebServer -Wait -Force -verbose
