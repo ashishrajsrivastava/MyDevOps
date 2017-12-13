@@ -3,6 +3,7 @@
 param([string[]]$ComputerName = $env:COMPUTERNAME)
     # One can evaluate expressions to get the node list
     # E.g: $AllNodes.Where("Role -eq Web").NodeName
+    #Sample comment
     node $ComputerName
     {
         # Call Resource Provider
