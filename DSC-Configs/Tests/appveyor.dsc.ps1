@@ -7,4 +7,4 @@
 ( Install-Web -COMPUTERNAME $ENV:COMPUTERNAME ).FullName |
    Set-Content -Path .\Artifacts.txt
 
-Start-DscConfiguration .\Install-Web -Wait -Force -verbose
+Start-DscConfiguration .\Install-WebServer -Wait -Force -verbose
