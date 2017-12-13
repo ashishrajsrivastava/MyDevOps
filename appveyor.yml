@@ -5,6 +5,9 @@
 skip_commits:
   message: /updated readme.*/
 
+# Build worker image (VM template)
+image: Visual Studio 2015
+
 install:
   - cinst pester
 
