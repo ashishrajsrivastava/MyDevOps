@@ -6,7 +6,7 @@
             "value": "SouthCentralUS"
         },
         "virtualNetworkResourceGroup": {
-            "value": "cygrp-demo-vnet-rg"
+            "value": "rg-adp-shared-infra"
         },
         "virtualMachinePublisher": {
             "value": "MicrosoftWindowsServer"
@@ -18,50 +18,47 @@
             "value": "2012-R2-Datacenter"
         },
         "virtualNetworkName": {
-            "value": "cygrp-demo-vnet"
+            "value": "adp-vnet1"
         },
         "subnetName": {
-            "value": "Subnet1"
+            "value": "Internal"
         },
         "VmSize": {
             "value": "Standard_DS2_v2"
         },
         "virtualMachineName": {
-            "value": "cygrp-demo-vm1"
+            "value": "adp-demo-vm1"
         },
         "adminUsername": {
-            "value": "CyGrpDevOps"
+            "value": "LocalAdmin"
         },
         "adminPassword": {
           "reference": {
               "keyVault": {
-                  "id": "/subscriptions/fcfaa90d-897d-4fee-abb9-334d5c8940e3/resourceGroups/cygrp-demo-vnet-rg/providers/Microsoft.KeyVault/vaults/cygrpdemo"
+                  "id": "/subscriptions/7ee50840-a30b-4b50-8d6a-b416aa9c0285/resourceGroups/rg-adp-shared-infra/providers/Microsoft.KeyVault/vaults/adp-key-vault"
               },
-              "secretName": "DemoAdmin"
+              "secretName": "LocalAdmin"
           }
         },
         "publicIpAddressType": {
             "value": "Static"
         },
         "existingDomainName": {
-           "value": "cygrpdemo.local"
+           "value": "wowazure.local"
         },
         "existingOUPath": {
            "value": ""
         },
          "DomainUserName": {
-           "value": "CYGRPDEMO\\CyGrpDevOps"
+           "value": "wowazure\\EA"
         },
          "DomainPassword": {
-             "reference": {
-              "keyVault": {
-                  "id": "/subscriptions/fcfaa90d-897d-4fee-abb9-334d5c8940e3/resourceGroups/cygrp-demo-vnet-rg/providers/Microsoft.KeyVault/vaults/cygrpdemo"
-              },
-              "secretName": "DemoAdmin"
-          }     
-        },
-        "chocoPackages": {
-         "value": "googlechrome"
-         }
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/7ee50840-a30b-4b50-8d6a-b416aa9c0285/resourceGroups/rg-adp-shared-infra/providers/Microsoft.KeyVault/vaults/adp-key-vault"
+                },
+                "secretName": "EA"
+            }     
+        }
     }
 }

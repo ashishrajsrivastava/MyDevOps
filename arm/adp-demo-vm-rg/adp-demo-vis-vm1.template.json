@@ -61,12 +61,6 @@
       "metadata": {
         "description": "The existing OU for the SQL Server"
       }
-    },
-    "chocoPackages": {
-      "type": "string",
-      "metadata": {
-        "description": "List of Chocolatey packages to install separated by a semi-colon eg. linqpad;sysinternals"
-      }
     }
   },
   "variables": {
@@ -119,33 +113,6 @@
           }]
         }
       },
-      "resources": [
-        {
-            "name": "SetupChocolatey",
-            "type": "extensions",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "2015-06-15",
-            "dependsOn": [
-              "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
-            ],
-            "tags": {
-              "displayName": "SetupChocolatey"
-            },
-            "properties": {
-              "publisher": "Microsoft.Compute",
-              "type": "CustomScriptExtension",
-              "typeHandlerVersion": "1.9",
-              "autoUpgradeMinorVersion": true,
-              "settings": {
-                "fileUris": [
-                  "https://bitbucket.org/ashishrajs/demoarm/raw/3e36df75c11c9fe99f054411cf1ab1d9510d3112/cygrp-demo-vm-rg/SetupChocolatey.ps1"
-                ],
-                "commandToExecute": "[concat('powershell -ExecutionPolicy bypass -File ','SetupChocolatey.ps1',' -chocoPackages ',parameters('chocoPackages'))]"
-              }
-
-            }
-          }
-      ],
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
       ]
@@ -212,31 +179,6 @@
         "protectedSettings": {
           "Password": "[parameters('domainPassword')]"
         }
-      }
-    },
-    
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('virtualMachineName'),'/', 'DSCIIS')]",
-      "apiVersion": "2015-06-15",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.19",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "ModulesUrl": "https://bitbucket.org/ashishrajs/demoarm/raw/ee2bd46857ea270948e99ac0cd50fdc0f3027bae/cygrp-demo-vm-rg/CygWebsite.zip",
-          "ConfigurationFunction": "CygWebsite.ps1\\CygWebsite",
-          "Properties": {
-            "MachineName": "[parameters('virtualMachineName')]"
-            
-          }
-        },
-        "protectedSettings": null
       }
     }
   ]
