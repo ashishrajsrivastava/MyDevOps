@@ -1,0 +1,67 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "SouthCentralUS"
+        },
+        "virtualNetworkResourceGroup": {
+            "value": "cygrp-demo-vnet-rg"
+        },
+        "virtualMachinePublisher": {
+            "value": "MicrosoftWindowsServer"
+        },
+        "virtualMachineOffer": {
+            "value": "WindowsServer"
+        },
+        "virtualMachineSKU": {
+            "value": "2012-R2-Datacenter"
+        },
+        "virtualNetworkName": {
+            "value": "cygrp-demo-vnet"
+        },
+        "subnetName": {
+            "value": "Subnet1"
+        },
+        "VmSize": {
+            "value": "Standard_DS2_v2"
+        },
+        "virtualMachineName": {
+            "value": "cygrp-demo-vm1"
+        },
+        "adminUsername": {
+            "value": "CyGrpDevOps"
+        },
+        "adminPassword": {
+          "reference": {
+              "keyVault": {
+                  "id": "/subscriptions/fcfaa90d-897d-4fee-abb9-334d5c8940e3/resourceGroups/cygrp-demo-vnet-rg/providers/Microsoft.KeyVault/vaults/cygrpdemo"
+              },
+              "secretName": "DemoAdmin"
+          }
+        },
+        "publicIpAddressType": {
+            "value": "Static"
+        },
+        "existingDomainName": {
+           "value": "cygrpdemo.local"
+        },
+        "existingOUPath": {
+           "value": ""
+        },
+         "DomainUserName": {
+           "value": "CYGRPDEMO\\CyGrpDevOps"
+        },
+         "DomainPassword": {
+             "reference": {
+              "keyVault": {
+                  "id": "/subscriptions/fcfaa90d-897d-4fee-abb9-334d5c8940e3/resourceGroups/cygrp-demo-vnet-rg/providers/Microsoft.KeyVault/vaults/cygrpdemo"
+              },
+              "secretName": "DemoAdmin"
+          }     
+        },
+        "chocoPackages": {
+         "value": "googlechrome"
+         }
+    }
+}

@@ -1,0 +1,243 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetworkResourceGroup": {
+      "type": "String"
+    },
+    "virtualMachinePublisher": {
+      "type": "String"
+    },
+    "virtualMachineOffer": {
+      "type": "String"
+    },
+    "virtualMachineSKU": {
+      "type": "String"
+    },
+    "virtualNetworkName": {
+      "type": "String"
+    },
+    "subnetName": {
+      "type": "String"
+    },
+    "VmSize": {
+      "type": "String"
+    },
+    "virtualMachineName": {
+      "type": "String"
+    },
+    "adminUsername": {
+      "type": "String"
+    },
+    "adminPassword": {
+      "type": "SecureString"
+    },
+    "publicIpAddressType": {
+      "type": "String"
+    },
+    "location": {
+      "type": "String"
+    },
+    "existingDomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "The existing AD domain of the SQL Server"
+      }
+    },
+    "DomainUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "User name for AD Domain"
+      }
+    },
+    "DomainPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for AD user"
+      }
+    },
+    "existingOUPath": {
+      "type": "string",
+      "metadata": {
+        "description": "The existing OU for the SQL Server"
+      }
+    },
+    "chocoPackages": {
+      "type": "string",
+      "metadata": {
+        "description": "List of Chocolatey packages to install separated by a semi-colon eg. linqpad;sysinternals"
+      }
+    }
+  },
+  "variables": {
+    "vnetId": "[resourceId(parameters('virtualNetworkResourceGroup'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+    "networkInterfaceName": "[concat(parameters('virtualMachineName'),'-nic1')]",
+    "publicIPAddressName": "[concat (parameters('virtualMachineName'),'-pip')]",
+    "domainName": "[parameters('existingDomainName')]",
+    "OUPath": "[parameters('existingOUPath')]",
+    "VmNicIPAddress":"10.0.0.5"
+  },
+  "resources": [{
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('virtualMachineName')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('VmSize')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('virtualMachinePublisher')]",
+            "offer": "[parameters('virtualMachineOffer')]",
+            "sku": "[parameters('virtualMachineSKU')]",
+            "version": "latest"
+          },
+
+
+          "osDisk": {
+              "name": "[concat(parameters('virtualMachineName'), '-disk-0')]",
+              "createOption": "fromImage",
+              "managedDisk": {
+                  "storageAccountType": "Premium_LRS"
+              }
+          },
+          "dataDisks": []
+        },
+        "osProfile": {
+          "computerName": "[parameters('virtualMachineName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
+          "windowsConfiguration": {
+            "provisionVmAgent": "true"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [{
+            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+          }]
+        }
+      },
+      "resources": [
+        {
+            "name": "SetupChocolatey",
+            "type": "extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2015-06-15",
+            "dependsOn": [
+              "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
+            ],
+            "tags": {
+              "displayName": "SetupChocolatey"
+            },
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "CustomScriptExtension",
+              "typeHandlerVersion": "1.9",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "https://bitbucket.org/ashishrajs/demoarm/raw/3e36df75c11c9fe99f054411cf1ab1d9510d3112/cygrp-demo-vm-rg/SetupChocolatey.ps1"
+                ],
+                "commandToExecute": "[concat('powershell -ExecutionPolicy bypass -File ','SetupChocolatey.ps1',' -chocoPackages ',parameters('chocoPackages'))]"
+              }
+
+            }
+          }
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/publicIpAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('networkInterfaceName')]",
+      "apiVersion": "2016-03-30",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [{
+          "name": "ipconfig1",
+          "properties": {
+            "publicIpAddress": {
+              "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+            },
+            "privateIPAllocationMethod": "Static",
+            "privateIPAddress": "[variables('VmNicIPAddress')]",
+            "subnet": {
+              "id": "[variables('subnetRef')]"
+            }
+          }
+        }],
+        "dnsSettings": {
+
+          "dnsServers": ["10.0.0.4"]
+        },
+        "enableIPForwarding": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+      ]
+    },
+
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('virtualMachineName'),'/joindomain')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "Name": "[variables('domainName')]",
+          "OUPath": "[variables('OUPath')]",
+          "User": "[parameters('DomainUserName')]",
+          "Restart": "true",
+          "Options": 3
+        },
+        "protectedSettings": {
+          "Password": "[parameters('domainPassword')]"
+        }
+      }
+    },
+    
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('virtualMachineName'),'/', 'DSCIIS')]",
+      "apiVersion": "2015-06-15",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.19",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "ModulesUrl": "https://bitbucket.org/ashishrajs/demoarm/raw/ee2bd46857ea270948e99ac0cd50fdc0f3027bae/cygrp-demo-vm-rg/CygWebsite.zip",
+          "ConfigurationFunction": "CygWebsite.ps1\\CygWebsite",
+          "Properties": {
+            "MachineName": "[parameters('virtualMachineName')]"
+            
+          }
+        },
+        "protectedSettings": null
+      }
+    }
+  ]
+}
