@@ -192,7 +192,7 @@
 			UpdateEnabled =  $UpdateEnabled 
         }
 
-        #adding sql server feature firewall rules.
+        <#adding sql server feature firewall rules.
         xSqlServerFirewall SqlFirewallRules
         {
                         DependsOn = '[xSQLServerSetup]SQLServerSetup'
@@ -202,9 +202,10 @@
                         SourcePath           = $PackagePath
                         SourceCredential = $AdminCreds
         }                       
-   
+       #>
 		LocalConfigurationManager 
         {
+            DebugMode = $true
             RebootNodeIfNeeded = $True
         }
 

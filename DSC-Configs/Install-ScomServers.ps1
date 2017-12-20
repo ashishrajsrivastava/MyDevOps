@@ -3,16 +3,16 @@
  param(
         
         [Parameter(Mandatory)]
-		[System.Management.Automation.PSCredential]$SystemCenter2012OperationsManagerActionAccount,
+		[System.Management.Automation.PSCredential]$SystemCenter2016OperationsManagerActionAccount,
 
         [Parameter(Mandatory)]
-		[System.Management.Automation.PSCredential]$SystemCenter2012OperationsManagerDASAccount,
+		[System.Management.Automation.PSCredential]$SystemCenter2016OperationsManagerDASAccount,
 
          [Parameter(Mandatory)]
-		[System.Management.Automation.PSCredential]$SystemCenter2012OperationsManagerDataReader,
+		[System.Management.Automation.PSCredential]$SystemCenter2016OperationsManagerDataReader,
 
         [Parameter(Mandatory)]
-		[System.Management.Automation.PSCredential]$SystemCenter2012OperationsManagerDataWriter,
+		[System.Management.Automation.PSCredential]$SystemCenter2016OperationsManagerDataWriter,
 
         [Parameter(Mandatory)]
 		[System.Management.Automation.PSCredential]$InstallerServiceAccount,
@@ -27,10 +27,10 @@
 		[string]$SystemCenter2016OperationsManagerDatabaseInstance,
 
         [Parameter(Mandatory)]
-		[string]$SystemCenter2016OperationsManagerDatawarehouseInstance,
-
+		[string]$SystemCenter2016OperationsManagerDatabaseName,
+        
         [Parameter(Mandatory)]
-		[string]$SystemCenter2016OperationsManagerReportingInstance,
+		[string]$SystemCenter2016OperationsManagerDatawarehouseDatabaseName,
 
         [Parameter(Mandatory)]
         [string]$MachineName,
@@ -42,25 +42,25 @@
         [string]$PackagePath,
 
         [Parameter(Mandatory)]
-        [string]$SQLServer2012SystemCLRTypesPath,
+        [string]$SQLServer2016SystemCLRTypesPath,
 
         [Parameter(Mandatory)]
-        [string]$ReportViewer2012RedistributablePath
+        [string]$ReportViewer2016RedistributablePath
  
        )
 
     Import-DscResource -Module xCredSSP
     Import-DscResource -Module xSQLServer
     Import-DscResource -Module xSCOM
+
+
     # One can evaluate expressions to get the node list
-    # E.g: $AllNodes.Where("Role -eq Web").NodeName
-    node $MachineName
+    node localhost
     {
         
-         # Set LCM to reboot if needed   
+         # Set LCM to reboot if needed and debug mode  
            LocalConfigurationManager
             {
-            DebugMode = $true
             RebootNodeIfNeeded = $true
             }
 
@@ -127,8 +127,8 @@
             {
                 GroupName = "Administrators"
                 MembersToInclude = @(
-                    $SystemCenter2012OperationsManagerActionAccount.UserName,
-                    $SystemCenter2012OperationsManagerDASAccount.UserName
+                    $SystemCenter2016OperationsManagerActionAccount.UserName,
+                    $SystemCenter2016OperationsManagerDASAccount.UserName
                 )
                 Credential = $InstallerServiceAccount
             
@@ -165,18 +165,19 @@
                 DependsOn = $DependsOn
                 Ensure = "Present"
                 SourcePath = $PackagePath
+                SourceFolder = ""
                 SetupCredential = $InstallerServiceAccount
                 ProductKey = $SystemCenter2016ProductKey
                 ManagementGroupName = $ManagementGroupName
                 FirstManagementServer = $true
-                ActionAccount = $SystemCenter2012OperationsManagerActionAccount
-                DASAccount = $SystemCenter2012OperationsManagerDASAccount
-                DataReader = $SystemCenter2012OperationsManagerDataReader
-                DataWriter = $SystemCenter2012OperationsManagerDataWriter
-                SqlServerInstance = $SystemCenter2016OperationsManagerDatabaseServer
-                DatabaseName = $SystemCenter2016OperationsManagerDatabaseInstance
-                DwSqlServerInstance = $SystemCenter2016OperationsManagerDatabaseServer
-                DwDatabaseName = $SystemCenter2016OperationsManagerDatawarehouseInstance
+                ActionAccount = $SystemCenter2016OperationsManagerActionAccount
+                DASAccount = $SystemCenter2016OperationsManagerDASAccount
+                DataReader = $SystemCenter2016OperationsManagerDataReader
+                DataWriter = $SystemCenter2016OperationsManagerDataWriter
+                SqlServerInstance = ($SystemCenter2016OperationsManagerDatabaseServer + "\" + $SystemCenter2016OperationsManagerDatabaseInstance)
+                DatabaseName = $SystemCenter2016OperationsManagerDatabaseName
+                DwSqlServerInstance = ($SystemCenter2016OperationsManagerDatabaseServer + "\" + $SystemCenter2016OperationsManagerDatabaseInstance)
+                DwDatabaseName = $SystemCenter2016OperationsManagerDatawarehouseDatabaseName
             }
 
 
@@ -187,9 +188,9 @@
             Package "SQLServer2016SystemCLRTypes"
             {
                 Ensure = "Present"
-                Name = "Microsoft System CLR Types for SQL Server 2016 (x64)"
-                ProductId = ""
-                Path = $SQLServer2012SystemCLRTypesPath
+                Name = "Microsoft System CLR Types for SQL Server 2016"
+                ProductId = "96EB5054-C775-4BEF-B7B9-AA96A295EDCD"
+                Path = $SQLServer2016SystemCLRTypesPath
                 Arguments = "ALLUSERS=2"
                 Credential = $InstallerServiceAccount
             }
@@ -199,9 +200,9 @@
             {
                 DependsOn = "[Package]SQLServer2016SystemCLRTypes"
                 Ensure = "Present"
-                Name = "Microsoft Report Viewer 2016 Runtime"
-                ProductID = ""
-                Path = $ReportViewer2012RedistributablePath
+                Name = "Microsoft Report Viewer for SQL Server 2016"
+                ProductID = "6ECB5D2E-AF2E-4E1B-A311-3CD800DF2A5F"
+                Path = $ReportViewer2016RedistributablePath
                 Arguments = "ALLUSERS=2"
                 Credential = $InstallerServiceAccount
             }
@@ -212,10 +213,11 @@
                 DependsOn = "[xSCOMManagementServerSetup]OMMS"
                 Ensure = "Present"
                 SourcePath = $PackagePath
+                SourceFolder = ""
                 SetupCredential = $InstallerServiceAccount
                 ManagementServer = $MachineName
-                SRSInstance = ($SystemCenter2016OperationsManagerDatabaseServer + "\" + $SystemCenter2016OperationsManagerReportingInstance)
-                DataReader = $SystemCenter2012OperationsManagerDataReader
+                SRSInstance = ($SystemCenter2016OperationsManagerDatabaseServer + "\" + $SystemCenter2016OperationsManagerDatabaseInstance)
+                DataReader = $SystemCenter2016OperationsManagerDataReader
             }
 
 
@@ -230,8 +232,8 @@
                 "[WindowsFeature]NET-WCF-HTTP-Activation45",
                 "[WindowsFeature]Web-Mgmt-Console",
                 "[WindowsFeature]Web-Metabase",
-                "[Package]SQLServer2012SystemCLRTypes",
-                "[Package]ReportViewer2012Redistributable",
+                "[Package]SQLServer2016SystemCLRTypes",
+                "[Package]ReportViewer2016Redistributable",
                 "[xSCOMManagementServerSetup]OMMS"
             )
            
@@ -240,6 +242,7 @@
                 DependsOn = $DependsOn
                 Ensure = "Present"
                 SourcePath = $PackagePath
+                SourceFolder = ""
                 SetupCredential = $InstallerServiceAccount
                 ManagementServer = $MachineName
             }
@@ -248,14 +251,17 @@
             xSCOMConsoleSetup "OMC"
             {
                 DependsOn = @(
-                    "[Package]SQLServer2012SystemCLRTypes",
-                    "[Package]ReportViewer2012Redistributable"
+                    "[Package]SQLServer2016SystemCLRTypes",
+                    "[Package]ReportViewer2016Redistributable"
                 )
                 Ensure = "Present"
                 SourcePath = $PackagePath
+                SourceFolder = ""
                 SetupCredential = $InstallerServiceAccount
             }
 
   
     }
 }
+
+
