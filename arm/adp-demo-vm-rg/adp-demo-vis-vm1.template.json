@@ -2,77 +2,225 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "virtualNetworkResourceGroup": {
-      "type": "String"
-    },
     "virtualMachinePublisher": {
-      "type": "String"
+      "type": "string"
     },
     "virtualMachineOffer": {
-      "type": "String"
+      "type": "string"
     },
     "virtualMachineSKU": {
-      "type": "String"
+      "type": "string"
     },
-    "virtualNetworkName": {
-      "type": "String"
-    },
-    "subnetName": {
-      "type": "String"
+    "vnetName": {
+      "type": "string"
     },
     "VmSize": {
-      "type": "String"
+      "type": "string"
     },
     "virtualMachineName": {
-      "type": "String"
+      "type": "string"
     },
     "adminUsername": {
-      "type": "String"
+      "type": "string"
     },
     "adminPassword": {
-      "type": "SecureString"
+      "type": "securestring"
     },
     "publicIpAddressType": {
-      "type": "String"
+      "type": "string"
     },
+    "publicIpAddressdnsLabel": {
+      "type": "string"
+    },
+
     "location": {
-      "type": "String"
+      "type": "string"
     },
-    "existingDomainName": {
+    
+
+    "vnetPrefix": {
       "type": "string",
+      "defaultValue": "192.168.0.0/16",
       "metadata": {
-        "description": "The existing AD domain of the SQL Server"
+        "description": "CIDR prefix for the VNet address space."
       }
     },
-    "DomainUserName": {
+    "frontEndSubnetName": {
       "type": "string",
+      "defaultValue": "FrontEnd",
       "metadata": {
-        "description": "User name for AD Domain"
+        "description": "Name for the front end subnet."
       }
     },
-    "DomainPassword": {
-      "type": "securestring",
+    "frontEndSubnetPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.1.0/24",
       "metadata": {
-        "description": "Password for AD user"
+        "description": "CIDR address prefix for the front end subnet."
       }
     },
-    "existingOUPath": {
+    "backEndSubnetName": {
       "type": "string",
+      "defaultValue": "BackEnd",
       "metadata": {
-        "description": "The existing OU for the SQL Server"
+        "description": "Name for the back end subnet."
+      }
+    },
+    "backEndSubnetPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.2.0/24",
+      "metadata": {
+        "description": "CIDR address prefix for the back end subnet."
+      }
+    },
+    "frontEndNSGName": {
+      "type": "string",
+      "defaultValue": "NSG-BackEnd",
+      "metadata": {
+        "description": "Name for the NSG used to allow remote RDP"
+      }
+    },
+    "backEndNSGName": {
+      "type": "string",
+      "defaultValue": "NSG-FrontEnd",
+      "metadata": {
+        "description": "Name for the NSG used to allow access to web servers on port 80"
       }
     }
   },
   "variables": {
-    "vnetId": "[resourceId(parameters('virtualNetworkResourceGroup'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-    "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('frontEndSubnetName'))]",
     "networkInterfaceName": "[concat(parameters('virtualMachineName'),'-nic1')]",
     "publicIPAddressName": "[concat (parameters('virtualMachineName'),'-pip')]",
-    "domainName": "[parameters('existingDomainName')]",
-    "OUPath": "[parameters('existingOUPath')]",
-    "VmNicIPAddress":"10.0.0.5"
+    "VmNicIPAddress":"192.168.1.5"
   },
-  "resources": [{
+  "resources": [
+    
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('backEndNSGName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "NSG - Remote Access"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow-frontend",
+            "properties": {
+              "description": "Allow FE Subnet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1433",
+              "sourceAddressPrefix": "[parameters('frontEndSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "block-internet",
+            "properties": {
+              "description": "Block Internet",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Deny",
+              "priority": 200,
+              "direction": "Outbound"
+            }
+          }
+
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('frontEndNSGName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "NSG - Front End"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "rdp-rule",
+            "properties": {
+              "description": "Allow RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "web-rule",
+            "properties": {
+              "description": "Allow WEB",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('vnetName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('frontEndNSGName'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('backEndNSGName'))]"
+      ],
+      "tags": {
+        "displayName": "VNet"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('frontEndSubnetName')]",
+            "properties": {
+              "addressPrefix": "[parameters('frontEndSubnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('frontEndNSGName'))]"
+              }
+            }
+          },
+          {
+            "name": "[parameters('backEndSubnetName')]",
+            "properties": {
+              "addressPrefix": "[parameters('backEndSubnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('backEndNSGName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    
+    {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[parameters('virtualMachineName')]",
       "apiVersion": "2016-04-30-preview",
@@ -92,7 +240,7 @@
 
           "osDisk": {
               "name": "[concat(parameters('virtualMachineName'), '-disk-0')]",
-              "createOption": "fromImage",
+              "createOption": "FromImage",
               "managedDisk": {
                   "storageAccountType": "Premium_LRS"
               }
@@ -123,7 +271,10 @@
       "apiVersion": "2015-06-15",
       "location": "[parameters('location')]",
       "properties": {
-        "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
+        "publicIpAllocationMethod": "[parameters('publicIpAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('publicIpAddressdnsLabel')]"
+        }
       }
     },
     {
@@ -147,39 +298,20 @@
         }],
         "dnsSettings": {
 
-          "dnsServers": ["10.0.0.4"]
+          "dnsServers": []
         },
         "enableIPForwarding": false
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
       ]
-    },
-
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('virtualMachineName'),'/joindomain')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "JsonADDomainExtension",
-        "typeHandlerVersion": "1.3",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "Name": "[variables('domainName')]",
-          "OUPath": "[variables('OUPath')]",
-          "User": "[parameters('DomainUserName')]",
-          "Restart": "true",
-          "Options": 3
-        },
-        "protectedSettings": {
-          "Password": "[parameters('domainPassword')]"
-        }
-      }
     }
-  ]
+  ],
+  "outputs": {
+    "hostname": {
+      "type": "string",
+      "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+    }
+  }
 }
