@@ -266,9 +266,9 @@
       ]
     },
     {
-      "type": "Microsoft.Network/publicIpAddresses",
+      "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2017-09-01",
       "location": "[parameters('location')]",
       "properties": {
         "publicIpAllocationMethod": "[parameters('publicIpAddressType')]",
