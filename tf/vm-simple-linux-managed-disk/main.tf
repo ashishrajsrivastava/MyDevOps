@@ -8,6 +8,9 @@
 resource "azurerm_resource_group" "rg" {
   name     = "${var.resource_group}"
   location = "${var.location}"
+  tags {
+        environment = "ubuntu dev"
+    }
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -15,6 +18,10 @@ resource "azurerm_virtual_network" "vnet" {
   location            = "${var.location}"
   address_space       = ["${var.address_space}"]
   resource_group_name = "${azurerm_resource_group.rg.name}"
+
+  tags {
+        environment = "ubuntu dev"
+    }
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -35,6 +42,10 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = "${azurerm_public_ip.pip.id}"
   }
+
+  tags {
+        environment = "ubuntu dev"
+    }
 }
 
 resource "azurerm_public_ip" "pip" {
@@ -43,14 +54,42 @@ resource "azurerm_public_ip" "pip" {
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   public_ip_address_allocation = "Dynamic"
   domain_name_label            = "${var.dns_name}"
+
+  tags {
+        environment = "ubuntu dev"
+    }
 }
 
+resource "azurerm_network_security_group" "temyterraformpublicipnsg" {
+    name                = "myNetworkSecurityGroup"
+    location            = "East US"
+    resource_group_name = "${azurerm_resource_group.rg.name}"
+    security_rule {
+        name                       = "SSH"
+        priority                   = 1001
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "22"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
+   tags {
+        environment = "ubuntu dev"
+    }
+}
 resource "azurerm_storage_account" "stor" {
   name                     = "${var.dns_name}stor"
   location                 = "${var.location}"
   resource_group_name      = "${azurerm_resource_group.rg.name}"
   account_tier             = "${var.storage_account_tier}"
   account_replication_type = "${var.storage_replication_type}"
+
+  tags {
+        environment = "ubuntu dev"
+    }
 }
 
 resource "azurerm_managed_disk" "datadisk" {
@@ -106,4 +145,8 @@ resource "azurerm_virtual_machine" "vm" {
     enabled     = true
     storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
   }
+
+  tags {
+        environment = "ubuntu dev"
+    }
 }
