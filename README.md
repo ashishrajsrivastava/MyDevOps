@@ -1,5 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/g5qto798m8b19a77/branch/master?svg=true)](https://ci.appveyor.com/project/ashishrajsrivastava/mydevops/branch/master)
+
 <img src="https://github.com/ashishrajsrivastava/MyDevOps/blob/master/images/logo1.1.png" width="450" height="300">
-[![Build status](https://ci.appveyor.com/api/projects/status/g5qto798m8b19a77?svg=true)](https://ci.appveyor.com/project/ashishrajsrivastava/mydevops)
 
 # My DevOps Work.
 
