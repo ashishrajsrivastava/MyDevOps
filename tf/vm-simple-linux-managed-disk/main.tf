@@ -135,6 +135,7 @@ resource "azurerm_virtual_machine" "vm" {
     computer_name  = "${var.hostname}"
     admin_username = "${var.admin_username}"
     admin_password = "${var.admin_password}"
+    custom_data    = "${var.cloudconfig_file}"
   }
 
   os_profile_linux_config {
