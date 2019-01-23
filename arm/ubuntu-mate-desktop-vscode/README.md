@@ -11,6 +11,6 @@ This template creates a new Ubuntu VM with Mate desktop enabled. Mate desktop is
 
 To connect, run "mstsc" from windows desktop and connect to the fqdn/public ip of the VM. 
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/ashishrajsrivastava/MyDevOps/master/arm/ubuntu-mate-desktop-vscode/azuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fashishrajsrivastava%2FMyDevOps%2Fmaster%2Farm%2Fubuntu-mate-desktop-vscode%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
